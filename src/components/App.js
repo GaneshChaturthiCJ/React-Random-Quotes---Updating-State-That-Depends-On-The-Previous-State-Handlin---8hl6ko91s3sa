@@ -33,7 +33,7 @@ function App() {
         <div className="quote-text">{quote.content}</div>
         <div className="quote-author">- {quote.author}</div>
       </div>
-      <button id="new-quote" onClick={fetchQuote}>
+      <button id="new-quote" className="button" onClick={fetchQuote}>
         New Quote
       </button>
     </div>
