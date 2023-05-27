@@ -1,50 +1,44 @@
-import React, {useState } from "react";
+import React, { useState, useEffect } from 'react';
 import "../styles/App.css";
 
-var colors = [
-  '#16a085',
-  '#27ae60',
-  '#2c3e50',
-  '#f39c12',
-  '#e74c3c',
-  '#9b59b6',
-  '#FB6964',
-  '#342224',
-  '#472E32',
-  '#BDBB99',
-  '#77B1A9',
-  '#73A857'
-];
+function App() {
+  const [quote, setQuote] = useState({});
+  const [backgroundColor, setBackgroundColor] = useState('#282c34');
 
-const App = () => {
-  const [quote, setQuote] = useState({ author: "", AuthorQuote: "" });
-  const [backgroundColor, setBackgroundColor] = useState('white');
+  useEffect(() => {
+    fetchQuote();
+  }, []);
 
-  const handleClick = async () => {
-    const res = await fetch("https://api.quotable.io/random");
-    const response = await res.json();
-    setQuote({ author: response.author, AuthorQuote: response.content });
+  const fetchQuote = () => {
+    fetch('https://api.quotable.io/random')
+      .then(response => response.json())
+      .then(data => {
+        setQuote(data);
+        setBackgroundColor(getRandomColor());
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
-    let max = colors.length;
-    let min = 0;
-    let randomColor = Math.floor(Math.random() * (max - min + 1));
-    setBackgroundColor(colors[randomColor]);
+  const getRandomColor = () => {
+    const colors = ['#282c34', '#c0392b', '#2980b9', '#27ae60', '#8e44ad', '#f39c12'];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
   };
 
   return (
-
-      <div id="main" style={{backgroundColor}}>
-        <div id="wrapper">
-          <div className="quote-text">{quote.author}</div>
-          <div className="quote-author">{quote.AuthorQuote}</div>
-
-          <button type="button" className="buttons" onClick={handleClick}>
-            FETCH QUOTE
-          </button>
-        </div>
+    <div className="App" style={{ backgroundColor }}>
+      <div className="quote-container">
+        <div className="quote-text">{quote.content}</div>
+        <div className="quote-author">- {quote.author}</div>
       </div>
+      <button id="new-quote" onClick={fetchQuote}>
+        New Quote
+      </button>
+    </div>
   );
-};
+}
 
 export default App;
 
